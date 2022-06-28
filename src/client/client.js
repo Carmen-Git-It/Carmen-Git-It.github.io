@@ -1,10 +1,12 @@
 // Rewriting the original test code in the new framework
 
 import * as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 
 // Initialization
 const scene = new THREE.Scene();
 
+// Set up the camera
 const camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
@@ -13,9 +15,13 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.z = 2;
 
+// Set up the renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+//Set up orbital controls
+new OrbitControls(camera, renderer.domElement);
 
 // Creating a cube
 const cube_geometry = new THREE.BoxGeometry();
@@ -26,8 +32,8 @@ const cube = new THREE.Mesh(cube_geometry, cube_material);
 scene.add(cube);
 
 // Creating a plane
-const plane_geometry = new THREE.PlaneGeometry();
-const plane_material = new THREE.MeshBasicMaterial({ color:0xff0000, wireframe: true});
+const plane_geometry = new THREE.PlaneGeometry(20,20,20);
+const plane_material = new THREE.MeshBasicMaterial({ color:0xff0000});
 const plane = new THREE.Mesh(plane_geometry, plane_material);
 
 // Move the plane position and add it to the scene
