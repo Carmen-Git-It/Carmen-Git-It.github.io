@@ -69,9 +69,6 @@ planeBody.position.set(plane.position.x, plane.position.y, plane.position.z);
 planeBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
 world.addBody(planeBody);
 
-
-
-
 // Make sure the renderer reacts to the window being resized
 window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
@@ -102,7 +99,6 @@ physicsFolder.add(world.gravity, 'z', -10, 10, 0.1);
 physicsFolder.open();
 
 orbitControls.addEventListener('change', render);
-
 
 // Create a new stats object
 var stats = new Stats();
