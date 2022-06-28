@@ -18,7 +18,8 @@ module.exports = {
         fallback: {
             "util": false,
             "fs": false,
-            "path": false
+            "path": false,
+            "process": false
         },
         extensions: ['.js']
     },
