@@ -2,6 +2,7 @@
 
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+const Stats = require("stats-js");
 
 // Initialization
 const scene = new THREE.Scene();
@@ -49,13 +50,26 @@ function onWindowResize() {
     render();
 }
 
+// Create a new stats object
+var stats = new Stats();
+stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+stats.dom.style.position = 'absolute';
+// Add it to the DOM over the canvas
+document.body.appendChild(stats.dom);
+
 // Animate the objects in the scene
 function animate() {
+    // Begin tracking the performance of the render
+    stats.begin();
+
+    // Update the cube position
     requestAnimationFrame(animate);
     cube.rotation.x += 0.01;
     cube.rotation.y += 0.01;
 
+    // Render the scene
     render();
+    stats.end();
 }
 
 // Isolate the render function to be able to call it from multiple functions
