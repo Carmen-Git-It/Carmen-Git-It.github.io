@@ -1,0 +1,36 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "description": "A portfolio website created using three.js. By Carmen Whitton.",
+  "scripts": {
+    "dev": "webpack server --config ./src/client/webpack.dev.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Carmen-Git-It/Carmen-Git-It.github.io.git"
+  },
+  "keywords": [
+    "student",
+    "portfolio",
+    "threejs",
+    "carmen",
+    "whitton"
+  ],
+  "author": "Carmen Whitton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Carmen-Git-It/Carmen-Git-It.github.io/issues"
+  },
+  "homepage": "https://github.com/Carmen-Git-It/Carmen-Git-It.github.io#readme",
+  "dependencies": {
+    "three": "^0.141.0"
+  },
+  "devDependencies": {
+    "esbuild-loader": "^2.19.0",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9.2",
+    "webpack-merge": "^5.8.0"
+  }
+}
