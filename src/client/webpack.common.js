@@ -15,6 +15,11 @@ module.exports = {
         ]
     },
     resolve: {
+        fallback: {
+            "util": false,
+            "fs": false,
+            "path": false
+        },
         extensions: ['.js']
     },
     output: {
