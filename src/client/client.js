@@ -17,7 +17,7 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 camera.position.x = 0;
-camera.position.y = 2;
+camera.position.y = 7;
 camera.position.z = 10;
 
 // Set up the renderer
@@ -61,13 +61,40 @@ const plane = new THREE.Mesh(plane_geometry, plane_material);
 plane.rotateX(-Math.PI / 2);
 scene.add(plane);
 
+// Add friction
+const planeMaterial = new CANNON.Material('planeMaterial');
 // Create the plane's physical body in the world
 const planeShape = new CANNON.Plane();
-const planeBody = new CANNON.Body({ mass: 0 });
+const planeBody = new CANNON.Body({ mass: 0 , material: planeMaterial});
 planeBody.addShape(planeShape);
 planeBody.position.set(plane.position.x, plane.position.y, plane.position.z);
 planeBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1,0,0), -Math.PI/2);
 world.addBody(planeBody);
+
+const frictionPlane = new CANNON.ContactMaterial(planeMaterial, planeMaterial, {
+    friction: 0.5,
+    restitution: 0.5,
+    contactEquationStiffness: 1e8,
+    contactEquationRelaxation: 3,
+    frictionEquationStiffness: 1e8,
+    frictionEquationRegularizationTime: 3,
+});
+world.addContactMaterial(frictionPlane);
+
+// Create sphere to acts as user control
+const sphere_geometry = new THREE.SphereGeometry(0.5, 32, 32);
+const sphere_material = new THREE.MeshBasicMaterial({ color: 0x0000ff, wireframe: true });
+const user = new THREE.Mesh(sphere_geometry, sphere_material);
+user.position.set(0,3,0);
+scene.add(user);
+
+// Create the user control physics body
+const userShape = new CANNON.Sphere(0.5);
+const userBody = new CANNON.Body({ mass: 1 });
+userBody.addShape(userShape);
+userBody.position.set(user.position.x, user.position.y, user.position.z);
+userBody.quaternion.setFromEuler(user.rotation.x, user.rotation.y, user.rotation.z);
+world.addBody(userBody);
 
 // Make sure the renderer reacts to the window being resized
 window.addEventListener('resize', onWindowResize, false)
@@ -107,6 +134,9 @@ stats.dom.style.position = 'absolute';
 // Add it to the DOM over the canvas
 document.body.appendChild(stats.dom);
 
+// Add event listener for user
+document.addEventListener('keydown', handleKeyDown);
+
 // Animate the objects in the scene
 function animate() {
     // Begin tracking the performance of the render
@@ -137,10 +167,38 @@ function updatePositions() {
     cube.quaternion.copy(cubeBody.quaternion);
     plane.position.copy(planeBody.position);
     plane.quaternion.copy(planeBody.quaternion);
+    user.position.copy(userBody.position);
+    user.quaternion.copy(userBody.quaternion);
+
+    const userPosition = new THREE.Vector3();
+    const cameraPosition = new THREE.Vector3();
+    user.getWorldPosition(userPosition);
+    camera.getWorldPosition(cameraPosition);
+
+    camera.lookAt(userPosition);
 }
 
 function worldStep() {
     world.fixedStep();
+}
+
+function handleKeyDown(e) {
+    if (e.keyCode == 37) {
+        // Left
+        userBody.applyForce(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, 0, 0));
+    }
+    if (e.keyCode == 38) {
+        // Up
+        userBody.applyForce(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, 0, 0));
+    }
+    if (e.keyCode == 39) {
+        // Right
+        userBody.applyForce(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, 0, 0));
+    }
+    if (e.keyCode == 40) {
+        // Down
+        userBody.applyForce(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, 0, 0));
+    }
 }
 
 animate();
