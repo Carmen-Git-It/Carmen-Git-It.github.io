@@ -16,9 +16,11 @@ const camera = new THREE.PerspectiveCamera(
     0.1,
     1000
 );
-camera.position.x = 0;
-camera.position.y = 7;
-camera.position.z = 25;
+
+// CONSTANTS
+const cameraOffset = new THREE.Vector3(0, 10, 10);
+const userRadius = 0.5;
+const userMass =5;
 
 // Set up the renderer
 const renderer = new THREE.WebGLRenderer();
@@ -137,15 +139,15 @@ const frictionPlane = new CANNON.ContactMaterial(planeMaterial, planeMaterial, {
 world.addContactMaterial(frictionPlane);
 
 // Create sphere to acts as user control
-const sphere_geometry = new THREE.SphereGeometry(0.5, 32, 32);
+const sphere_geometry = new THREE.SphereGeometry(userRadius, 32, 32);
 const sphere_material = new THREE.MeshBasicMaterial({ color: 0x0000ff});
 const user = new THREE.Mesh(sphere_geometry, sphere_material);
 user.position.set(0,3,15);
 scene.add(user);
 
 // Create the user control physics body
-const userShape = new CANNON.Sphere(0.5);
-const userBody = new CANNON.Body({ mass: 5 });
+const userShape = new CANNON.Sphere(userRadius);
+const userBody = new CANNON.Body({ mass: userMass });
 userBody.addShape(userShape);
 userBody.position.set(user.position.x, user.position.y, user.position.z);
 userBody.quaternion.setFromEuler(user.rotation.x, user.rotation.y, user.rotation.z);
@@ -164,10 +166,10 @@ function onWindowResize() {
 const gui = new dat.GUI({name: 'Camera Settings'});
 
 // Add Camera settings to GUI
-const cameraFolder = gui.addFolder('Camera Settings');
-cameraFolder.add(camera.position, 'x', -10, 10);
-cameraFolder.add(camera.position, 'y', -10, 10);
-cameraFolder.add(camera.position, 'z', -10, 10);
+const cameraFolder = gui.addFolder('Camera Offset Settings');
+cameraFolder.add(cameraOffset, 'x', -10, 10);
+cameraFolder.add(cameraOffset, 'y', 0, 50);
+cameraFolder.add(cameraOffset, 'z', -10, 10);
 cameraFolder.open();
 const cubeFolder = gui.addFolder('Cube Settings');
 cubeFolder.add(cube1.position, 'x', -10, 10);
@@ -179,6 +181,9 @@ physicsFolder.add(world.gravity, 'x', -10, 10, 0.1);
 physicsFolder.add(world.gravity, 'y', -10, 10, 0.1);
 physicsFolder.add(world.gravity, 'z', -10, 10, 0.1);
 physicsFolder.open();
+const userFolder = gui.addFolder('User Settings');
+userFolder.add(userBody, 'mass', 0, 50, 0.1);
+userFolder.open();
 
 orbitControls.addEventListener('change', render);
 
@@ -242,7 +247,7 @@ function updatePositions() {
     user.getWorldPosition(userPosition);
     camera.getWorldPosition(cameraPosition);
 
-    camera.position.set(user.position.x, user.position.y + 10, user.position.z + 10);
+    camera.position.set(user.position.x + cameraOffset.x, user.position.y + cameraOffset.y, user.position.z + cameraOffset.z);
 
     camera.lookAt(userPosition);
 }
@@ -259,22 +264,22 @@ function handleKeyDownUp(e) {
 
     if (keyMap[37]) {
         // Left
-        userBody.applyImpulse(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
+        userBody.applyImpulse(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, userRadius / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(-1, 0, 0));
     }
     if (keyMap[38]) {
         // Up
-        userBody.applyImpulse(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, 0.5 / 2, 0));
+        userBody.applyImpulse(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, userRadius / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, -1));
     }
     if (keyMap[39]) {
         // Right
-        userBody.applyImpulse(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
+        userBody.applyImpulse(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, userRadius / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(1, 0, 10));
     }
     if (keyMap[40]) {
         // Down
-        userBody.applyImpulse(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, 0.5 / 2, 0));
+        userBody.applyImpulse(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, userRadius / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, 1));
     }
 }
