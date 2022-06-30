@@ -242,6 +242,8 @@ function updatePositions() {
     user.getWorldPosition(userPosition);
     camera.getWorldPosition(cameraPosition);
 
+    camera.position.set(user.position.x, user.position.y + 10, user.position.z + 10);
+
     camera.lookAt(userPosition);
 }
 
