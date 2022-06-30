@@ -90,7 +90,7 @@ scene.add(user);
 
 // Create the user control physics body
 const userShape = new CANNON.Sphere(0.5);
-const userBody = new CANNON.Body({ mass: 1 });
+const userBody = new CANNON.Body({ mass: 5 });
 userBody.addShape(userShape);
 userBody.position.set(user.position.x, user.position.y, user.position.z);
 userBody.quaternion.setFromEuler(user.rotation.x, user.rotation.y, user.rotation.z);
@@ -185,20 +185,26 @@ function worldStep() {
 function handleKeyDown(e) {
     if (e.keyCode == 37) {
         // Left
-        userBody.applyForce(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, 0, 0));
+        userBody.applyImpulse(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
+        // userBody.applyLocalImpulse(new CANNON.Vec3(-1, 0, 0));
     }
     if (e.keyCode == 38) {
         // Up
-        userBody.applyForce(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, 0, 0));
+        userBody.applyImpulse(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, 0.5 / 2, 0));
+        // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, -1));
     }
     if (e.keyCode == 39) {
+        console.log('right');
         // Right
-        userBody.applyForce(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, 0, 0));
+        userBody.applyImpulse(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
+        // userBody.applyLocalImpulse(new CANNON.Vec3(1, 0, 10));
     }
     if (e.keyCode == 40) {
         // Down
-        userBody.applyForce(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, 0, 0));
+        userBody.applyImpulse(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, 0.5 / 2, 0));
+        // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, 1));
     }
+    console.log(userBody.velocity);
 }
 
 animate();
