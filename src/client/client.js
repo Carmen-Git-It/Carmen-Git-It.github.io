@@ -8,6 +8,7 @@ const Stats = require("stats-js");
 
 // Initialization
 const scene = new THREE.Scene();
+scene.add(new THREE.AxesHelper(5))          // Adds an X-Y-Z axis helper to the scene
 
 // Set up the camera
 const camera = new THREE.PerspectiveCamera(
@@ -22,8 +23,15 @@ const cameraOffset = new THREE.Vector3(0, 10, 10);
 const userRadius = 0.5;
 const userMass =5;
 
+const light1 = new THREE.PointLight(0xffffff, 1, 100);
+light1.position.set(0, 8, 5);
+scene.add(light1);
+
 // Set up the renderer
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({
+    powerPreference: 'high-performance',
+    antialias: true
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
@@ -45,7 +53,7 @@ world.solver.iterations = 10;
 
 // Creating a cube
 const cube_geometry = new THREE.BoxGeometry(1,1,1);
-const cube_material = new THREE.MeshBasicMaterial({ color: 0xff0000});
+const cube_material = new THREE.MeshLambertMaterial({ color: 0xff0000});
 //Bottom left cube
 const cube1 = new THREE.Mesh(cube_geometry, cube_material);
 cube1.position.x = -1;
@@ -113,7 +121,7 @@ world.addBody(cubeBody6);
 
 // Creating a plane
 const plane_geometry = new THREE.PlaneGeometry(500,500,500);
-const plane_material = new THREE.MeshBasicMaterial({ color:0xffffff});
+const plane_material = new THREE.MeshLambertMaterial({ color:0xffffff});
 const plane = new THREE.Mesh(plane_geometry, plane_material);
 plane.rotateX(-Math.PI / 2);
 scene.add(plane);
@@ -140,7 +148,8 @@ world.addContactMaterial(frictionPlane);
 
 // Create sphere to acts as user control
 const sphere_geometry = new THREE.SphereGeometry(userRadius, 32, 32);
-const sphere_material = new THREE.MeshBasicMaterial({ color: 0x0000ff});
+const sphere_material = new THREE.MeshLambertMaterial({ color: 0x0000ff});
+sphere_material.reflectivity = 0;
 const user = new THREE.Mesh(sphere_geometry, sphere_material);
 user.position.set(0,3,15);
 scene.add(user);
