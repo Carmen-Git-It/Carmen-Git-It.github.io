@@ -190,7 +190,8 @@ stats.dom.style.position = 'absolute';
 document.body.appendChild(stats.dom);
 
 // Add event listener for user
-document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('keydown', handleKeyDownUp);
+document.addEventListener('keyup', handleKeyDownUp);
 
 // Animate the objects in the scene
 function animate() {
@@ -248,23 +249,28 @@ function worldStep() {
     world.fixedStep();
 }
 
-function handleKeyDown(e) {
-    if (e.keyCode == 37) {
+var keyMap = {};
+
+function handleKeyDownUp(e) {
+
+    keyMap[e.keyCode] = e.type == 'keydown';
+
+    if (keyMap[37]) {
         // Left
         userBody.applyImpulse(new CANNON.Vec3(-1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(-1, 0, 0));
     }
-    if (e.keyCode == 38) {
+    if (keyMap[38]) {
         // Up
         userBody.applyImpulse(new CANNON.Vec3(0, 0, -1), new CANNON.Vec3(0, 0.5 / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, -1));
     }
-    if (e.keyCode == 39) {
+    if (keyMap[39]) {
         // Right
         userBody.applyImpulse(new CANNON.Vec3(1, 0, 0), new CANNON.Vec3(0, 0.5 / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(1, 0, 10));
     }
-    if (e.keyCode == 40) {
+    if (keyMap[40]) {
         // Down
         userBody.applyImpulse(new CANNON.Vec3(0, 0, 1), new CANNON.Vec3(0, 0.5 / 2, 0));
         // userBody.applyLocalImpulse(new CANNON.Vec3(0, 0, 1));
